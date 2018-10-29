@@ -37,14 +37,8 @@ ROS_INFO_STREAM("linear x: " << msg.linear.x);
 // Process the incoming laser scan message
 void commandCallback(const sensor_msgs::LaserScan::ConstPtr& msg) {
 if (fsm == FSM_MOVE_FORWARD) {
-// Compute the average range value between MIN_SCAN_ANGLE and MAX_SCAN_ANGLE
-//
-// NOTE: ideally, the following loop should have additional checks to ensure
-//       that indices are not out of bounds, by computing:
-//
-//   -currAngle = msg->angle_min + msg->angle_increment*currIndex
-//
-//       and then ensuring that currAngle <= msg->angle_max
+
+
 ROS_INFO_STREAM("In callback");
 float AVG_RANGE = float(MIN_SCAN_ANGLE_RAD + MAX_SCAN_ANGLE_RAD) / 2.0f;
 unsigned int minIndex = ceil((MIN_SCAN_ANGLE_RAD -msg->angle_min) / msg->angle_increment);
@@ -66,7 +60,6 @@ for (unsigned int currIndex = minIndex + 1; currIndex < maxIndex; currIndex++) {
 }
 ROS_INFO_STREAM("Range: " << closestRange);
 
-/////////////////////// ANSWER CODE BEGIN ///////////////////
 if (closestRange < PROXIMITY_RANGE_M){
   rotateStartTime = ros::Time::now(); //ehhhh
   int direction = rand() % 2 + 1;
@@ -80,9 +73,6 @@ if (closestRange < PROXIMITY_RANGE_M){
   }
   fsm = FSM_ROTATE;
 }
-
-
-/////////////////////// ANSWER CODE END ///////////////////
 }
 };
 // Main FSM loop for ensuring that ROS messages are
@@ -91,16 +81,7 @@ if (closestRange < PROXIMITY_RANGE_M){
 void spin() {
 ros::Rate rate(10); // Specify the FSM loop rate in Hz
 while(ros::ok()) { // Keep spinning loop until user presses Ctrl+C
-// TODO: Either call:
-//
-//       -move(0, ROTATE_SPEED_RADPS); // Rotate right
-//
-//       or
-//
-//       -move(FORWARD_SPEED_MPS, 0); // Move foward
-//
-//       depending on the FSM state; also change the FSM state when appropriate
-/////////////////////// ANSWER CODE BEGIN ///////////////////
+
 if(fsm == FSM_MOVE_FORWARD) {
   ROS_INFO_STREAM("is forward:" << fsm);
   move(FORWARD_SPEED_MPS, 0);
@@ -112,15 +93,13 @@ else{
     fsm = FSM_MOVE_FORWARD;
   }
 }
-/////////////////////// ANSWER CODE END ///////////////////
 ros::spinOnce(); 
 // Need to call this function often to allow ROS to process incoming messages
 rate.sleep(); // Sleep for the rest of the cycle, to enforce the FSM loop rate
 }
 };
+//tunable parameters
 enum FSM {FSM_MOVE_FORWARD, FSM_ROTATE};
-// Tunable parameters
-// TODO: tune parameters as you see fit
 const static double MIN_SCAN_ANGLE_RAD = -10.0/180*M_PI;
 const static double MAX_SCAN_ANGLE_RAD = +10.0/180*M_PI;
 const static float PROXIMITY_RANGE_M = 1; // Should be smaller than sensor_msgs::LaserScan::range_max
