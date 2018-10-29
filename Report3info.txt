@@ -1,0 +1,13 @@
+Challenges:
+The robot's internal battery actually dying/ cannot charge with multiple chargers
+The robot tends to vere to the right when just given a velocity command. (could be telop itself? or could be fixed by pd controller?)
+Could not connect to the robot wirelessly due to network issues such as: no ip showing up under wlan0 and rejects adding a static ip
+Having to export the ros_hostname to the local host rather than the ip directly
+If the robot gets to close to the wall, it exhibits unknown behavior
+
+Success:
+
+The robot is able to random walk through the hallway without hitting objects with a proximity range of about a meter
+When it encouters an object the robot rotates exactly 180 degress and then rotates +- a random small angle
+The robot is also able to detect the wooden planks in the lab as well as the chairs most of the time
+Due to the random angle the robot does not get caught in corners
